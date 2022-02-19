@@ -26,32 +26,32 @@ import java.util.Random;
 public class PageEventRestController {
     @Autowired
     private StreamBridge streamBridge;
-    /*@Autowired
-    private InteractiveQueryService interactiveQueryService;*/
+    @Autowired
+    private InteractiveQueryService interactiveQueryService;
+
     @GetMapping("/publish/{topic}/{name}")
-    public PageEvent publish(@PathVariable String topic,@PathVariable String name){
-        PageEvent pageEvent = new PageEvent(name,Math.random()>0.5?"U1":"U2",new Date(),new Random().nextInt(9000));
-        streamBridge.send(topic,pageEvent);
+    public PageEvent publish(@PathVariable String topic, @PathVariable String name) {
+        PageEvent pageEvent = new PageEvent(name, Math.random() > 0.5 ? "U1" : "U2", new Date(), new Random().nextInt(9000));
+        streamBridge.send(topic, pageEvent);
         return pageEvent;
     }
-    /*@GetMapping(path = "/analytics",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<Map<String, Long>> analytics(){
-        return Flux.interval(Duration.ofSeconds(1))
 
-                .map(sequence->{
-                    Map<String,Long> stringLongMap=new HashMap<>();
+    @GetMapping(path = "/analytics", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<Map<String, Long>> analytics() {
+        return Flux.interval(Duration.ofSeconds(1))
+                .map(sequence -> {
+                    Map<String, Long> stringLongMap = new HashMap<>();
                     ReadOnlyWindowStore<String, Long> windowStore =
                             interactiveQueryService.getQueryableStore("page-count", QueryableStoreTypes.windowStore());
-                    Instant now=Instant.now();
-                    Instant from=now.minusMillis(5000);
+                    Instant now = Instant.now();
+                    Instant from = now.minusMillis(5000);
                     KeyValueIterator<Windowed<String>, Long> fetchAll = windowStore.fetchAll(from, now);
                     //WindowStoreIterator<Long> fetch = stats.fetch(name, from, now);
-                    while (fetchAll.hasNext()){
+                    while (fetchAll.hasNext()) {
                         KeyValue<Windowed<String>, Long> next = fetchAll.next();
-                        stringLongMap.put(next.key.key(),next.value);
+                        stringLongMap.put(next.key.key(), next.value);
                     }
                     return stringLongMap;
                 }).share();
-
-    }*/
+    }
 }

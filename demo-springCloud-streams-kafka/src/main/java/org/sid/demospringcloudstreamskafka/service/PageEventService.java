@@ -16,10 +16,9 @@ import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-/*
-@Service*/
+@Service
 public class PageEventService {
-   /* @Bean
+    @Bean
     public Consumer<PageEvent> pageEventConsumer(){
         return (input)->{
             System.out.println("***************");
@@ -38,8 +37,8 @@ public class PageEventService {
     @Bean
     public Function<PageEvent,PageEvent> pageEventFunction(){
         return (input)->{
-            input.setName("Page Event Kawtar");
-            input.setUser("Kawtar Lfridi");
+            input.setName("Page Event El Mehdi");
+            input.setUser("Mehdi");
             return input;
         };
     }
@@ -51,9 +50,9 @@ public class PageEventService {
                     .map((k,v)->new KeyValue<>(v.getName(),0L))
                     .groupBy((k,v)->k, Grouped.with(Serdes.String(),Serdes.Long()))
                     .windowedBy(TimeWindows.of(Duration.ofSeconds(1)))
-                    .count(Materialized.as("page-count"))
+                    .count(Materialized.as("page-count")) // Store pour stocker les donnes de MapReduce
                     .toStream()
                     .map((k,v)->new KeyValue<>("=>"+k.window().startTime()+k.window().endTime()+k.key(),v));
         };
-    }*/
+    }
 }
