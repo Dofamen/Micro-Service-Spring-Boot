@@ -44,15 +44,13 @@ public class PageEventService {
     }
     @Bean
     public Function <KStream<String,PageEvent>, KStream<String,Long>> kStreamFunction(){
-        return (input)->{
-            return input
-                    .filter((k,v)->v.getDuration()>100)
-                    .map((k,v)->new KeyValue<>(v.getName(),0L))
-                    .groupBy((k,v)->k, Grouped.with(Serdes.String(),Serdes.Long()))
-                    .windowedBy(TimeWindows.of(Duration.ofSeconds(1)))
-                    .count(Materialized.as("page-count")) // Store pour stocker les donnes de MapReduce
-                    .toStream()
-                    .map((k,v)->new KeyValue<>("=>"+k.window().startTime()+k.window().endTime()+k.key(),v));
-        };
+        return (input)-> input
+                .filter((k,v)->v.getDuration()>100)
+                .map((k,v)->new KeyValue<>(v.getName(),0L))
+                .groupBy((k,v)->k, Grouped.with(Serdes.String(),Serdes.Long()))
+                .windowedBy(TimeWindows.of(Duration.ofSeconds(1)))
+                .count(Materialized.as("page-count")) // Store pour stocker les donnes de MapReduce
+                .toStream()
+                .map((k,v)->new KeyValue<>("=>"+k.window().startTime()+k.window().endTime()+k.key(),v));
     }
 }
